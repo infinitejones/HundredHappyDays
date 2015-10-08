@@ -19,7 +19,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.SimpleFormatter;
 
 // For displaying the date
 
@@ -69,9 +68,11 @@ public class takePictureFragment extends Fragment {
 
     public void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Log.e(TAG, "Intent created");
         mMediaUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+        Log.e(TAG, "mMediaURI: " + mMediaUri);
         if (mMediaUri == null) {
-            Toast.makeText(getActivity(), "Problem accessing device storage", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Doh! Problem accessing device storage", Toast.LENGTH_LONG).show();
         } else {
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mMediaUri);
             startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST);
@@ -80,11 +81,14 @@ public class takePictureFragment extends Fragment {
 
     private Uri getOutputMediaFileUri(int mediaType) {
         if (isExternalStorageAvailable()) {
+            Log.e(TAG, "External storage available");
             String appName = getActivity().getString(R.string.app_name);
             File mediaStorageDir = new File
                     (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appName);
+            Log.e(TAG, "mediaStorageDir: " + mediaStorageDir);
 
             if (! mediaStorageDir.exists()) {
+                Log.e(TAG, "mediaStorageDir doesn't exist");
                 if (!mediaStorageDir.mkdirs()) {
                     Log.e(TAG, "Failed to create storage directory");
                     return null;
@@ -109,11 +113,7 @@ public class takePictureFragment extends Fragment {
 
     private boolean isExternalStorageAvailable() {
         String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)) {
-            return true;
-        } else {
-            return false;
-        }
+        return state.equals(Environment.MEDIA_MOUNTED);
     }
 }
 
