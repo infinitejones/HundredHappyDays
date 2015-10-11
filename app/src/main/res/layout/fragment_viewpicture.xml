@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_viewpicture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="io.m3l.hundredhappydays.MainActivity$takePictureFragment">
@@ -15,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/section_label"
         android:gravity="center"
-        android:text="Today&apos;s date is"
+        android:text="@string/todays_date"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -28,22 +29,12 @@
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/rssLabel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/todaysImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/todaysDate"
         android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:text="Your Quote of the Day is:"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/rssQOTD"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rssLabel"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_vertical|center_horizontal" />
+        android:layout_marginTop="63dp" />
 
 </RelativeLayout>

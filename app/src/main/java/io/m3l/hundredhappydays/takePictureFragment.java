@@ -68,11 +68,9 @@ public class takePictureFragment extends Fragment {
 
     public void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Log.e(TAG, "Intent created");
         mMediaUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-        Log.e(TAG, "mMediaURI: " + mMediaUri);
         if (mMediaUri == null) {
-            Toast.makeText(getActivity(), "Doh! Problem accessing device storage", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Problem accessing device storage", Toast.LENGTH_LONG).show();
         } else {
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mMediaUri);
             startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST);
@@ -81,14 +79,11 @@ public class takePictureFragment extends Fragment {
 
     private Uri getOutputMediaFileUri(int mediaType) {
         if (isExternalStorageAvailable()) {
-            Log.e(TAG, "External storage available");
-            String appName = getActivity().getString(R.string.app_name);
+            String appName = "HundredHappyDays";
             File mediaStorageDir = new File
-                    (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appName);
-            Log.e(TAG, "mediaStorageDir: " + mediaStorageDir);
+                    (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "HundredHappyDays");
 
             if (! mediaStorageDir.exists()) {
-                Log.e(TAG, "mediaStorageDir doesn't exist");
                 if (!mediaStorageDir.mkdirs()) {
                     Log.e(TAG, "Failed to create storage directory");
                     return null;

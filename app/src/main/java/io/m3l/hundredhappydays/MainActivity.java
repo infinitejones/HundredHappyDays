@@ -2,26 +2,26 @@ package io.m3l.hundredhappydays;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int TAKE_PHOTO_REQUEST = 0;
+    public static final int VIEW_PHOTO_REQUEST = 1;
+    public static final int VIEW_GALLERY_REQUEST = 2;
+    public static final int MEDIA_TYPE_IMAGE = 3;
     protected Uri mMediaUri;
-
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -91,58 +91,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // As long as the ActivityResult returned something,
         if (resultCode == RESULT_OK) {
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            mediaScanIntent.setData(mMediaUri);
+            // check whether I requested to view the photo.
+            if (requestCode == VIEW_PHOTO_REQUEST) {
+                // If I did there is no data in the ActivityResult,
+                if (data == null) {
+                    // show an error.
+                    Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
+                    // Otherwise, set mMediaUri to be the data that was sent back.
+                } else {
+                    mMediaUri = data.getData();
+                }
 
+                // If I actually requested to *take* the photo
+            } else {
+
+                // start a new mediaScanIntent so that the
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(mMediaUri);
+                sendBroadcast(mediaScanIntent);
+
+                viewPictureFragment newViewPictureFragment = new viewPictureFragment();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+                ft.replace(R.id.fragment_viewpicture, newViewPictureFragment);
+                ft.commit();
+            }
         } else if (resultCode != RESULT_CANCELED) {
-            Toast.makeText(this, "Sorry, there was an error!", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-
-            switch (position) {
-                case 0:
-                    return takePictureFragment.newInstance();
-                case 1:
-                    return viewPictureFragment.newInstance();
-                case 2:
-                    return viewGalleryFragment.newInstance();
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Take picture";
-                case 1:
-                    return "Today's picture";
-                case 2:
-                    return "View Gallery";
-            }
-            return null;
+            Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
         }
     }
 }

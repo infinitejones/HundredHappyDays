@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="general_error">Sorry, there was an error!</string>
+    <string name="get_started">GET STARTED!</string>
+    <string name="todays_date">Today\'s date is</string>
+    <string name="your_qotd">Your Quote of the Day is:</string>
+    <string name="failed_to_find_dir">Failed to find storage directory</string>
+
+</resources>
