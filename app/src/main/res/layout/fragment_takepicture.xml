@@ -40,19 +40,28 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/rssQOTD"
+        android:id="@+id/qotdText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rssLabel"
         android:layout_centerHorizontal="true"
-        android:gravity="center_vertical|center_horizontal" />
+        android:gravity="center_vertical" />
 
     <Button
         android:id="@+id/takePictureButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="Click here to take today&apos;s picture!" />
+
+    <TextView
+        android:id="@+id/qotdName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/qotdText"
+        android:gravity="right" />
 
 </RelativeLayout>

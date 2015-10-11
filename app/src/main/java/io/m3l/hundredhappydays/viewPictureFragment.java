@@ -9,19 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.util.Date;
 
 import static java.lang.String.valueOf;
 
-// For displaying the date
-
-/**
- * A placeholder fragment containing a simple view.
- */
 public class viewPictureFragment extends Fragment {
 
     public static final String TAG = "viewPictureFragment";
@@ -39,12 +32,6 @@ public class viewPictureFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_viewpicture, container, false);
 
-        // Display today's date as a TextView
-
-        TextView tv = (TextView) rootView.findViewById(R.id.todaysDate);
-        String ct = DateFormat.getDateInstance().format(new Date());
-        tv.setText(ct);
-
         ImageView imgView = (ImageView) rootView.findViewById(R.id.todaysImage);
         imgView.setImageURI(Uri.parse(valueOf(getNewestMediaFileUri())));
 
@@ -55,7 +42,6 @@ public class viewPictureFragment extends Fragment {
     // generate the URI of the most recent image
     private Uri getNewestMediaFileUri() {
 
-        //String dirPath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "HundredHappyDays");
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "HundredHappyDays");
 

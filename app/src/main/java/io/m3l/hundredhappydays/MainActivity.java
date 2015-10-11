@@ -53,14 +53,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takePictureFragment.newInstance();
-            }
-        });*/
-
     }
 
     @Override
@@ -91,26 +83,44 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             if (requestCode == VIEW_PHOTO_REQUEST) {
+                refreshPictureFragment();
                 if (data == null) {
                     Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
                 } else {
                     mMediaUri = data.getData();
+                    refreshPictureFragment();
                 }
-
-            } else {
-
+            } else if (requestCode == VIEW_GALLERY_REQUEST) {
+                if (data == null) {
+                    Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
+                } else {
+                    mMediaUri = data.getData();
+                    refreshGalleryFragment();
+                }
+            } else if (requestCode == TAKE_PHOTO_REQUEST) {
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                 mediaScanIntent.setData(mMediaUri);
                 sendBroadcast(mediaScanIntent);
-
-                viewPictureFragment newViewPictureFragment = new viewPictureFragment();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-                ft.replace(R.id.fragment_viewpicture, newViewPictureFragment);
-                ft.commit();
+            } else if (resultCode != RESULT_CANCELED) {
+                Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
             }
-        } else if (resultCode != RESULT_CANCELED) {
-            Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
         }
     }
+
+    protected void refreshPictureFragment() {
+        viewPictureFragment refreshViewPictureFragment = new viewPictureFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.replace(R.id.fragment_viewpicture, refreshViewPictureFragment);
+        ft.commit();
+    }
+
+    protected void refreshGalleryFragment() {
+        viewGalleryFragment refreshViewGalleryFragment = new viewGalleryFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.replace(R.id.fragment_viewgallery, refreshViewGalleryFragment);
+        ft.commit();
+    }
 }
+

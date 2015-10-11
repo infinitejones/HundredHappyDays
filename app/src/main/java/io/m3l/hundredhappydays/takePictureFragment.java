@@ -2,6 +2,7 @@ package io.m3l.hundredhappydays;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,7 +15,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,6 +42,8 @@ public class takePictureFragment extends Fragment {
 
     protected Uri mMediaUri;
 
+    AsyncTask<Void, Void, rssItem> fetchRSSaSync = null;
+
     private Button mTakePictureButton;
 
     public static takePictureFragment newInstance() {
@@ -51,10 +60,58 @@ public class takePictureFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_takepicture, container, false);
         mTakePictureButton = (Button) rootView.findViewById(R.id.takePictureButton);
 
-        // Display today's date as a TextView
-        TextView tv = (TextView) rootView.findViewById(R.id.todaysDate);
-        String ct = DateFormat.getDateInstance().format(new Date());
-        tv.setText(ct);
+        String title = null;
+        String description = null;
+
+        rssItem todaysQuote = new rssItem(title, description);
+        new AsyncTask<Void, Void, rssItem>() {
+
+            @Override
+            protected rssItem doInBackground(Void... params) {
+                String title = null;
+                String description = null;
+                rssItem todaysQuote = new rssItem(title, description);
+
+                URL url = null;
+                try {
+                    url = new URL("http://www.quotationspage.com/data/mqotd.rss");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                HttpURLConnection urlConnection = null;
+                try {
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                rssParser parser = new rssParser();
+                try {
+                    return parser.parse(urlConnection.getInputStream());
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return todaysQuote;
+            }
+        };
+
+
+
+        /* Display today's date as a TextView */
+        TextView dateText = (TextView) rootView.findViewById(R.id.todaysDate);
+        String todaysDate = DateFormat.getDateInstance().format(new Date());
+        dateText.setText(todaysDate);
+
+        /* Display today's Quote of the Day in two text views - description and title */
+
+        TextView quoteText = (TextView) rootView.findViewById(R.id.qotdText);
+        TextView quoteName = (TextView) rootView.findViewById(R.id.qotdName);
+        String qotdText = todaysQuote.getDescription();
+        String qotdName = todaysQuote.getTitle();
+        quoteText.setText(qotdText);
+        quoteName.setText(qotdName);
+
 
         mTakePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,9 +134,8 @@ public class takePictureFragment extends Fragment {
         }
     }
 
-    private Uri getOutputMediaFileUri(int mediaType) {
+    private Uri getOutputMediaFileUri(int MEDIA_TYPE_IMAGE) {
         if (isExternalStorageAvailable()) {
-            String appName = "HundredHappyDays";
             File mediaStorageDir = new File
                     (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "HundredHappyDays");
 
